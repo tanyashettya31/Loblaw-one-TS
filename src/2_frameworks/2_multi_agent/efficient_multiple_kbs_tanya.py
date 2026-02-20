@@ -58,7 +58,7 @@ async def _main(
     ):
         # Run the agent in streaming mode to get and display intermediate outputs
         result_stream = agents.Runner.run_streamed(
-            eda_agent,
+            main_agent,
             input=query,
             session=session,
             max_turns=30,  # Increase max turns to support more complex queries
@@ -271,26 +271,26 @@ if __name__ == "__main__":
         """,
         # instructions="""
         #      You are an expert in converting English questions to BigQuery SQL query!
-             
+
         #     The SQL database has the name transactions_data and has the following columns 
         #     - transaction_id,product_id,product_description,sales_quantity,transaction_date,unit_price,customer_id,banner_name,sales_amount,store_id
-            
+
         #     The SQL database has the name calendar_data and has the following columns 
         #     - year,week,start_date,end_date
-            
+
         #     The SQL database has the name products_data and has the following columns 
         #     - product_id,product_description,brand_description,brand_id,category_id,category_name,subcategory_id,subcategory_name
 
         #     The SQL database has the name segments_data and has the following columns 
         #     - customer_id,parent_segment,segment
-            
+
         #     The SQL database has the name stores_data and has the following columns 
         #     - banner_name,store_id,division_name
-            
+
         #     For example,
         #     Example 1 - How many entries of records are present?, 
         #     the SQL command will be something like this SELECT COUNT(*) FROM transactions_data ;
-            
+
         #     Example 2 - Tell me all the transactions that of S/4 PINK FLOWER CANDLES IN BOWL?, 
         #     the SQL command will be something like this SELECT * FROM transactions_data 
         #     where product_description="S/4 PINK FLOWER CANDLES IN BOWL"; 
@@ -322,7 +322,7 @@ if __name__ == "__main__":
         #         AND c.week <= 18
         #     GROUP BY
         #         t.product_description;         
-            
+
         #     ALWAYS FOLLOW THESE INSTRUCTIONS:
         #     - The sql code should not have ``` in beginning or end and sql word in output.
         #     - Make the query case insensitive.
@@ -345,7 +345,7 @@ if __name__ == "__main__":
         # """,
 
             # LIST of product_ids that has a product_description that match the query.
-                        
+
         tools=[
             agents.function_tool(x.get_schema_info),
             agents.function_tool(x.execute),
@@ -446,10 +446,10 @@ if __name__ == "__main__":
         _main,
         **COMMON_GRADIO_CONFIG,
         examples=[
-
             [
                 "Get a list of ALL product codes which has candle in its description"
             ],
+            
             [
                 """ Give me a breakdown of average unit price and average quantity by banner and product description 
                     for the all Vaseline brand candle transactions 
@@ -466,7 +466,6 @@ if __name__ == "__main__":
                 """
             ],
 
-            
             [
                 """ On average, how many customers purchase hair products and if they do, how much do they spend each month 
                 """
@@ -484,7 +483,3 @@ if __name__ == "__main__":
         demo.launch(share=True)
     finally:
         asyncio.run(client_manager.close())
-
-
-
-        
