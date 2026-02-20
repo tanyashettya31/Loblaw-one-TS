@@ -47,7 +47,7 @@ class AsyncWeaviateKnowledgeBase:
         self,
         async_client: WeaviateAsyncClient,
         collection_name: str,
-        num_results: int = 500,
+        num_results: int = 1000,
         snippet_length: int = 1000,
         max_concurrency: int = 3,
         embedding_model_name: str = "@cf/baai/bge-m3",
@@ -105,24 +105,27 @@ class AsyncWeaviateKnowledgeBase:
                 semaphore=self.semaphore,
             )
 
-        self.logger.info(f"Query: {keyword}; Returned matches: {len(response.objects)}")
+        self.logger.info(f"Query: {keyword}; Returned matches: {response.objects}")
 
-        return [response.objects]
+        # print(response.objects)
 
-        # hits = []
-        # for obj in response.objects:
-        #     hit = {
-        #         "_source": {
-        #             "title": obj.properties.get("title", ""),
-        #             "section": obj.properties.get("section", None),
-        #         },
-        #         "highlight": {
-        #             "text": [obj.properties.get("text", "")[: self.snippet_length]]
-        #         },
-        #     }
-        #     hits.append(hit)
+        # return [response.objects if response.objects is None else response.objects.properties]
+
+        hits = []
+        for obj in response.objects:
+            hit = {
+                "Products": {
+                    "product_id": obj.properties.get("product_id", ""),
+                    "product_description": obj.properties.get("product_description", ""),
+                },
+                # "highlight": {
+                #     "text": [obj.properties.get("text", "")[: self.snippet_length]]
+                # },
+            }
+            hits.append(hit)
 
         # return [_SearchResult.model_validate(_hit) for _hit in hits]
+        return hits
 
     def _vectorize(self, text: str) -> list[float]:
         """Vectorize text using the embedding client.

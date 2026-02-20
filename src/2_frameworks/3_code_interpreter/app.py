@@ -102,7 +102,7 @@ if __name__ == "__main__":
     code_interpreter = CodeInterpreter(
         local_files=[
             Path("sandbox_content/"),
-            Path("tests/tool_tests/example_files/example_a.csv"),
+            Path("/home/coder/agent-bootcamp/mock_transactions.csv"),
         ]
     )
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
         _main,
         **COMMON_GRADIO_CONFIG,
         examples=[
-            ["What is the sum of the column `x` in this example_a.csv?"],
+            ["What is the sum of the column sl_amt"],
             ["What is the sum of the column `y` in this example_a.csv?"],
             ["Create a linear best-fit line for the data in example_a.csv."],
         ],
